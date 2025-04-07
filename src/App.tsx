@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import type { Schema } from "../amplify/data/resource";
 import { generateClient } from "aws-amplify/data";
 import { useAuthenticator } from '@aws-amplify/ui-react';
-//import Header from "./components/Header.tsx";
+import Header from "./components/Header.tsx";
 
 
 const client = generateClient<Schema>();
@@ -104,6 +104,7 @@ function statusColor(status:string) {
   return (
     <main>
 
+    <Header/>
 
       <button onClick={() => setModal(true)} className="w-[50px] h-[50px] bg-blue-400 flex text-white rounded-full items-center justify-center text-3xl font-bold p-4 cursor-pointer fixed bottom-4 right-4">
         <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M10 1H6V6L1 6V10H6V15H10V10H15V6L10 6V1Z" fill="#ffffff"></path> </g></svg>
