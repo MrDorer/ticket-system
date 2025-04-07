@@ -11,9 +11,11 @@ function App() {
     client.models.Todo.observeQuery().subscribe({
       next: (data) => setTodos([...data.items]),
     });
+    console.log(client.models)
   }, []);
 
   function createTodo() {
+    
     client.models.Todo.create({ content: window.prompt("Todo content") });
   }
 
