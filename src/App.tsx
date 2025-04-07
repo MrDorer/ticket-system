@@ -17,6 +17,17 @@ function App() {
   const [detailModal, setDetailModal] = useState(false);
   const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
 
+  const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState<'all' | 'open' | 'in-progress' | 'resolved'>('all');
+
+  const filteredTickets = tickets.filter((ticket) => {
+    const matchesTitle = ticket.title?.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesStatus = statusFilter === 'all' || ticket.status === statusFilter;
+    return matchesTitle && matchesStatus;
+  });
+  
+  
+
   const openDetailModal = (ticket:Ticket) => {
     setSelectedTicket(ticket);
     setDetailModal(true);
@@ -128,24 +139,30 @@ function statusColor(status:string) {
   return (
     <main>
       
-    <Header/>
+    <Header searchTerm={searchTerm} setSearchTerm={setSearchTerm} statusFilter={statusFilter} setStatusFilter={setStatusFilter}/>
     <div><Toaster/></div>
       <button onClick={() => setModal(true)} className="w-[50px] h-[50px] bg-blue-400 flex text-white rounded-full items-center justify-center text-3xl font-bold p-4 cursor-pointer fixed bottom-4 right-4 z-10">
         <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M10 1H6V6L1 6V10H6V15H10V10H15V6L10 6V1Z" fill="#ffffff"></path> </g></svg>
       </button>
       <div className="grid grid-cols-4 gap-4 px-[3vw] my-[3vw]">
-        {tickets.map((todo) => (
-          <div onClick={() => openDetailModal(todo)} className="bg-white drop-shadow-lg rounded-lg p-[1vw] flex flex-col cursor-pointer" key={todo.id}>
-            <p className="font-bold text-lg">{todo.title}</p>
-            <p>{todo.description}</p>
-            <p className="">📅 {formatTimestamp(todo.createdAt)}</p>
-            <p>👤 {todo.userEmail}</p>
-            <p className={`${statusColor(todo.status ?? 'open')} rounded-lg`}>
-              {formatStatus(todo.status ?? 'open')}
-            </p>
+        { filteredTickets.length > 0 ? (
+          filteredTickets.map((todo) => (
+            <div onClick={() => openDetailModal(todo)} className="bg-white drop-shadow-lg rounded-lg p-[1vw] flex flex-col cursor-pointer" key={todo.id}>
+              <p className="font-bold text-lg">{todo.title}</p>
+              <p>{todo.description}</p>
+              <p className="">📅 {formatTimestamp(todo.createdAt)}</p>
+              <p>👤 {todo.userEmail}</p>
+              <p className={`${statusColor(todo.status ?? 'open')} rounded-lg`}>
+                {formatStatus(todo.status ?? 'open')}
+              </p>
+            </div>
+            
+          ))
+        ) : (
+          <div className="col-span-4 bg-zinc-200 p-[1vw] font-semibold rounded-lg text-center">
+            <p>Aun no hay resultados disponibles</p>
           </div>
-          
-        ))}
+        )}
       </div>
 
       {detailModal && selectedTicket && (
@@ -156,9 +173,9 @@ function statusColor(status:string) {
             <p className="mb-2">{selectedTicket.description}</p>
             <p className="text-sm">📅 {formatTimestamp(selectedTicket.createdAt)}</p>
             <p className="text-sm">👤 {selectedTicket.userEmail}</p>
-            <p className={`${statusColor(selectedTicket.status ?? 'open')} rounded-lg mt-2`}>
+            <button className={`${statusColor(selectedTicket.status ?? 'open')} rounded-lg mt-2 w-full cursor-pointer`}>
               {formatStatus(selectedTicket.status ?? 'open')}
-            </p>
+            </button>
             <div className="w-full mt-[2vh] flex justify-between">
               <button onClick={() => setDetailModal(false)} className="w-[45%] rounded-md bg-zinc-200 cursor-pointer">Cerrar</button>
               <button onClick={() => deleteteTicket(selectedTicket.id)} className="w-[45%] rounded-md bg-red-500 text-white cursor-pointer">Eliminar</button>

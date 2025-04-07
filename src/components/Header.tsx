@@ -2,7 +2,15 @@ import { useAuthenticator } from '@aws-amplify/ui-react';
 import { useState } from 'react';
 import logo from '../assets/logo.png'
 
-function Header() {
+interface HeaderProps {
+    searchTerm: string;
+    setSearchTerm: (term: string) => void;
+    statusFilter: 'all' | 'open' | 'in-progress' | 'resolved';
+    setStatusFilter: (filter: 'all' | 'open' | 'in-progress' | 'resolved') => void;
+  }
+
+function Header({ searchTerm, setSearchTerm, statusFilter, setStatusFilter }: HeaderProps) {
+
     const { user, signOut } = useAuthenticator();
     const [isOpen, setIsOpen] = useState(false);
 
@@ -35,9 +43,15 @@ function Header() {
                     className='rounded-lg px-[1vw] py-1 border border-zinc-300 col-span-2'
                     type="text" 
                     placeholder="Buscar tickets..." 
-                    id="searchInput" 
+                    id="searchInput"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
                 />
-                <select name="status" className='rounded-lg px-[1vw] py-1 bg-white border border-zinc-300'>
+                <select 
+                    value={statusFilter}
+                    onChange={(e) => setStatusFilter(e.target.value as 'all' | 'open' | 'in-progress' | 'resolved')}
+                    name="status" 
+                    className='rounded-lg px-[1vw] py-1 bg-white border border-zinc-300'>
                     <option value="all">Todos</option>
                     <option value="open">Pendientes</option>
                     <option value="in-progress">En Progreso</option>
