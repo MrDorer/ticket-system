@@ -13,15 +13,23 @@ function App() {
 
   const [modal, setModal] = useState(false)
 
-  const [formData, setFormData] = useState({
+  interface IFormData {
+    title: string;
+    description: string;
+    status: 'open' | 'resolved' | 'in-progress';
+    doneBy: string | null;
+    userEmail: string | null;
+  }
+
+  const [formData, setFormData] = useState<IFormData>({
     title:'',
     description:'',
     status: 'open',
     doneBy: null,
-    userEmail: user.signInDetails?.loginId
+    userEmail: user?.signInDetails?.loginId || '',
   })
 
-  function formatStatus(status){
+  function formatStatus(status:string){
     switch (status){
       case 'open':
         return '🟡 Pendiente';
@@ -32,7 +40,7 @@ function App() {
     }
   }
 
-  function formatTimestamp(timestamp) {
+  function formatTimestamp(timestamp:string) {
     const date = new Date(timestamp);
     return new Intl.DateTimeFormat('es-MX', {
       year: 'numeric',
@@ -45,7 +53,7 @@ function App() {
   }
   
   
-function statusColor(status) {
+function statusColor(status:string) {
     switch (status){
       case 'open':
         return 'bg-yellow-100';
@@ -90,10 +98,6 @@ function statusColor(status) {
     formData.title = ''
     formData.description = ''
     setModal(false);
-  } 
-
-  function deleteTodo(id: string) {
-    client.models.Todo.delete({ id })
   }
 
   return (
@@ -111,7 +115,9 @@ function statusColor(status) {
             <p>{todo.description}</p>
             <p className="">📅 {formatTimestamp(todo.createdAt)}</p>
             <p>👤 {todo.userEmail}</p>
-            <p className={`${statusColor(todo.status)} rounded-lg`}>{formatStatus(todo.status)}</p>
+            <p className={`${statusColor(todo.status ?? 'open')} rounded-lg`}>
+              {formatStatus(todo.status ?? 'open')}
+            </p>
           </div>
           
         ))}
