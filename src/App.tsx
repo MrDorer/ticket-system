@@ -11,20 +11,11 @@ const client = generateClient<Schema>();
 function App() {
   const { user } = useAuthenticator();
   const [tickets, setTickets] = useState<Array<Schema["Ticket"]["type"]>>([]);
+  type Ticket = Schema["Ticket"]["type"];
 
   const [modal, setModal] = useState(false)
   const [detailModal, setDetailModal] = useState(false);
   const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
-
-  interface Ticket {
-    id: string;
-    title: string;
-    description: string;
-    createdAt: string | Date;
-    userEmail: string;
-    status?: string;
-  }
-  
 
   const openDetailModal = (ticket:Ticket) => {
     setSelectedTicket(ticket);
