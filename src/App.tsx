@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import type { Schema } from "../amplify/data/resource";
 import { generateClient } from "aws-amplify/data";
 import { useAuthenticator } from '@aws-amplify/ui-react';
-import Header from "./components/Header";
+import Header from "./components/Header.tsx";
 
 
 const client = generateClient<Schema>();
