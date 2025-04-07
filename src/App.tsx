@@ -76,6 +76,7 @@ function statusColor(status:string) {
 
   useEffect(() => {
     fetchData();
+    console.log('debuggin')
   }, []);
 
   const handleInputChange = ( e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement> ) => {
