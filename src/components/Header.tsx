@@ -1,5 +1,6 @@
 import { useAuthenticator } from '@aws-amplify/ui-react';
 import { useState } from 'react';
+import logo from '../assets/logo.png'
 
 function Header() {
     const { user, signOut } = useAuthenticator();
@@ -11,7 +12,9 @@ function Header() {
     return (
         <>
             <div className="h-[60px] grid grid-cols-5 gap-x-4 items-center rounded-none px-[4vw] bg-white">
-                <p>adas</p>
+                <div className='w-[10vw] h-[45px]'>
+                    <img src={logo} className='w-full h-full object-cover'/>
+                </div>
                 <p className="text-2xl font-bold text-center col-span-3 ">📋Gestion de Tickets</p>
                 <div className="relative">
                     <p className="text-right cursor-pointer hover:text-blue-500" onClick={toggleDropdown}>
