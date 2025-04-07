@@ -13,6 +13,7 @@ const schema = a.schema({
       description: a.string(),
       status: a.string(),
       doneBy: a.datetime(),
+      userEmail: a.string()
     }).authorization((allow) => [allow.publicApiKey()]),
   Todo: a
     .model({
