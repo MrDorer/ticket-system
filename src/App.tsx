@@ -69,6 +69,11 @@ function App() {
 
   function formatTimestamp(timestamp:string) {
     const date = new Date(timestamp);
+
+    if (isNaN(date.getTime())) {
+      return 'Fecha inválida';
+    }
+
     return new Intl.DateTimeFormat('es-MX', {
       year: 'numeric',
       month: 'numeric',
@@ -86,8 +91,8 @@ function statusColor(status:string) {
         return 'bg-yellow-100';
       case 'resolved':
         return 'bg-green-100'
-      case ' in-progress':
-          return 'bg-blue-100';
+      case 'in-progress':
+          return 'bg-orange-100';
   }
 }
 
@@ -134,7 +139,30 @@ function statusColor(status:string) {
     toast.success("Ticket eliminado")
   }
 
-
+  const cycleStatus = async () => {
+    if (!selectedTicket) return;
+  
+    const nextStatus = (() => {
+      switch (selectedTicket.status) {
+        case 'open':
+          return 'in-progress';
+        case 'in-progress':
+          return 'resolved';
+        case 'resolved':
+        default:
+          return 'open';
+      }
+    })();
+  
+    await client.models.Ticket.update({
+      id: selectedTicket.id,
+      status: nextStatus,
+    });
+  
+    selectedTicket.status = nextStatus
+    toast.success(`Estado cambiado a: ${formatStatus(nextStatus)}`);
+  };
+  
 
   return (
     <main>
@@ -173,7 +201,7 @@ function statusColor(status:string) {
             <p className="mb-2">{selectedTicket.description}</p>
             <p className="text-sm">📅 {formatTimestamp(selectedTicket.createdAt)}</p>
             <p className="text-sm">👤 {selectedTicket.userEmail}</p>
-            <button className={`${statusColor(selectedTicket.status ?? 'open')} rounded-lg mt-2 w-full cursor-pointer`}>
+            <button onClick={cycleStatus} className={`${statusColor(selectedTicket.status ?? 'open')} rounded-lg mt-2 w-full cursor-pointer`}>
               {formatStatus(selectedTicket.status ?? 'open')}
             </button>
             <div className="w-full mt-[2vh] flex justify-between">
